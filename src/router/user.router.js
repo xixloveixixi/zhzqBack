@@ -6,7 +6,7 @@ const router = new Router({prefix : '/users'});
 // 3、引入用户控制器
 const {register} = require('../controller/userController')
 // 4、 定义一个简单的路由
-router.get('/register' , register)
+router.post('/register' , register)
 
 // 5、导出
 module.exports = router;

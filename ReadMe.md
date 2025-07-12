@@ -221,3 +221,58 @@ router.get('/register' , register)
 module.exports = router;
 ```
 
+## 8、解析body
+
+1、引入koa-body
+
+```
+npm install koa-body
+```
+
+2、注册中间件
+
+```
+const Koa = require('koa');
+const KoaBody = require('koa-body'); // 确保已安装
+const userRouter = require('../router/user.router');
+
+const app = new Koa();
+
+// 先注册解析请求体的中间件
+app.use(KoaBody());
+```
+
+3、解析body
+
+- 获取参数
+- 操作数据库，在service层
+- 返回结果
+
+```
+const {createUser} = require('../service/user.service');
+class UserController {
+    async register(ctx){
+        // 1、获取数据
+        const {username, password} = ctx.request.body;
+        // 2、操作数据库：service层
+        const res = await createUser(username , password);
+        console.log(res);
+        // 3、返回结果
+        ctx.body = ctx.request.body;
+    }
+}
+```
+
+4、service层
+
+```
+class UserService {
+    async createUser(username , password){
+        return 'User created successfully';
+    }
+}
+
+// 导出
+module.exports = new UserService();
+```
+

@@ -1,17 +1,20 @@
-// 进行业务相关的配置
 const Koa = require('koa');
-// 引入router
+const KoaBody = require('koa-body'); // 确保已安装
 const userRouter = require('../router/user.router');
 
-// 创建一个新的Koa应用实例
 const app = new Koa();
-// 定义路由中间件
-// 注意啦，Koa是按照顺序执行的，所以需要先定义路由中间件
+
+// 先注册解析请求体的中间件
+app.use(KoaBody());
+
+// 再注册路由中间件
 app.use(userRouter.routes());
-// 定义一个简单的中间件
+
+// 最后定义全局中间件（404 处理）
 app.use(async (ctx) => {
-  ctx.body = 'Hello, api!';
+  if (!ctx.body) {
+    ctx.body = 'Hello, api!';
+  }
 });
 
-// 导出
 module.exports = app;
