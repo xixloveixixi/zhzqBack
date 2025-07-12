@@ -1,34 +1,3 @@
-# ReadMe
-
-## 1、npm初始化
-
-```
-npm init -y 
-```
-
-生成packga.json，记住项目的依赖
-
-## 2、git初始化
-
-```
-git init 
-```
-
-生成git
-
-## 3、创建ReadMe
-
-编写文件
-
-## 4、搭建一个简单的koa项目
-
-引入koa
-
-```
-npm i koa
-```
-
-```
 const Koa = require('koa');
 // 创建一个新的Koa应用实例
 const app = new Koa();
@@ -40,5 +9,3 @@ app.use(async (ctx) => {
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
 });
-```
-
