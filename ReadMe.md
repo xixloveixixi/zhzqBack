@@ -144,3 +144,80 @@ app.use(async (ctx) => {
 });
 ```
 
+## 7、优化项目结构
+
+### 7.1 将 http 服务和 app 业务拆分
+
+把app的部分放在src/app/index.js
+
+```
+// 进行业务相关的配置
+const Koa = require('koa');
+// 引入router
+const userRouter = require('../router/user.router');
+
+// 创建一个新的Koa应用实例
+const app = new Koa();
+// 定义路由中间件
+// 注意啦，Koa是按照顺序执行的，所以需要先定义路由中间件
+app.use(userRouter.routes());
+// 定义一个简单的中间件
+app.use(async (ctx) => {
+  ctx.body = 'Hello, api!';
+});
+
+// 导出
+module.exports = app;
+```
+
+改写main.js
+
+```
+// 引入
+const app = require('./app/index')
+
+// 导入配置文件
+const {APP_PORT} = require('./config/config.default');
+
+// 启动服务器，监听3000端口
+app.listen(APP_PORT, () => {
+  console.log(`Server is running on http://localhost:${APP_PORT}`);
+});
+```
+
+### 7.2 将路由和控制器拆分
+
+其实就是把回调函数写到一个文件夹当中
+
+src/controller/userController
+
+```
+// 把回调函数部分写在这里面
+
+class UserController {
+    async register(ctx){
+        ctx.body = 'User registration successful';
+    }
+}
+
+// 导出UserController,实例的方式
+module.exports = new UserController();
+```
+
+改写router
+
+```
+// 1、引入router
+const Router = require('koa-router');
+// 2、创建一个router实例
+const router = new Router({prefix : '/users'});
+
+// 3、引入用户控制器
+const {register} = require('../controller/userController')
+// 4、 定义一个简单的路由
+router.get('/register' , register)
+
+// 5、导出
+module.exports = router;
+```
+
