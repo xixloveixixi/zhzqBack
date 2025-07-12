@@ -103,3 +103,44 @@ app.listen(APP_PORT, () => {
 });
 ```
 
+## 6、编写路由
+
+我们怎么将不同的url返回不同的数据呢，就是使用的路由：实现url调用处理函数
+
+1、下载koa-router
+
+```
+npm i koa-router
+```
+
+2、创建文件
+
+src/router/user.router.js
+
+3、编写路由配置
+
+```
+// 1、引入router
+const Router = require('koa-router');
+// 2、创建一个router实例
+const router = new Router({prefix : '/users'});
+// 3、 定义一个简单的路由
+router.get('/' , (ctx) => {
+ctx.body = 'Hello users';
+})
+
+// 4、导出
+module.exports = router;
+```
+
+4、改写main.js
+
+```
+// 注意啦，Koa是按照顺序执行的，所以需要先定义路由中间件
+app.use(userRouter.routes());
+// 定义一个简单的中间件
+app.use(async (ctx) => {
+  ctx.body = 'Hello, api!';
+});
+```
+
