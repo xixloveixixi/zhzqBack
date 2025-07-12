@@ -42,3 +42,64 @@ app.listen(3000, () => {
 });
 ```
 
+## 5、优化
+
+### 5.1 自动重启
+
+1、使用nodemon进行重启
+
+```
+npm i nodemon
+```
+
+2、修改package配置--启动脚本
+
+```
+ "scripts": {
+    "dev" : "nodemon ./src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+```
+
+### 5.2 读取配置文件
+
+1、下载配置dotenv
+
+```
+npm i dotenv
+```
+
+2、环境变量
+
+根目录下：.env
+
+```
+APP_PORT = 8000
+```
+
+3、配置文件
+
+src/config/config.default.js
+
+```
+// 1、导入doteenv
+const dotenv = require('dotenv');
+// 2、启动dotenv
+dotenv.config();
+
+// 3、导出配置对象
+
+module.exports = process.env;
+```
+
+4、改写main.js
+
+```
+// 导入配置文件
+const {APP_PORT} = require('./config/config.default');
+// 启动服务器，监听3000端口
+app.listen(APP_PORT, () => {
+  console.log(`Server is running on http://localhost:${APP_PORT}`);
+});
+```
+
