@@ -314,3 +314,126 @@ try {
 
 ```
 
+## 10、model的创建
+
+1. **引入依赖**：首先，从 `sequelize` 库中解构出 `DataTypes`（用于定义字段类型），并引入已经配置好的 `sequelize` 实例（通常连接到你的数据库）。
+2. **定义模型结构**：使用 `sequelize.define('User', {...})` 方法定义了一个名为 `User` 的模型。
+   - `'User'` 是模型的名字。
+   - 传入的第二个参数是一个对象，描述了模型包含哪些字段（列）以及每个字段的属性：
+     - `username`: 定义了一个字符串类型的字段，不允许为空 (`allowNull: false`)，并且值必须唯一 (`unique: true`)。
+     - `password`: 定义了一个字符串类型的字段，不允许为空。
+     - `is_admin`: 定义了一个布尔类型的字段，不允许为空，默认值为 `false`。
+   - `comment` 是可选的，用于给数据库中的字段添加注释。
+3. **同步数据库（注释掉）**：`sequelize.sync({ force: true })` 这行代码被注释掉了。如果取消注释并执行，它会尝试根据定义的 `User` 模型在数据库中创建一个名为 `users` 的表（如果不存在）。`force: true` 参数表示如果表已存在，则先删除再重新创建（这通常只用于开发环境）。
+4. **导出模型**：最后，使用 `module.exports = User;` 将定义好的 `User` 模型导出，以便其他模块（如服务层、控制器层）可以导入并使用它来与数据库交互（例如，创建、查询、更新、删除用户记录）。
+
+```
+// 创建user的model
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db/seq');
+
+const User = sequelize.define('User', {
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        comment: '用户名'
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '密码'
+    },
+    is_admin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        comment: '是否为管理员'
+    }
+});
+
+// 强制同步数据库
+// sequelize.sync({ force: true });
+
+// 导出User模型
+module.exports = User;
+```
+
+### 10.1 新建一个用户
+
+完成register函数
+
+判断合法性->判断合理性->操作数据库->返回结果
+
+```
+const { createUser , getUserInfo } = require('../service/user.service');
+
+class UserController {
+    async register(ctx) {
+        // 1、获取数据
+        const { username, password } = ctx.request.body;
+
+        // 进行错误判断
+        // 合理性：是否为空
+        if(!username || !password){
+            ctx.body = {
+                code:400 ,// 错误码
+                message: '用户名或密码不能为空',
+                result: ''
+            }
+            return;
+        }
+        // 合法性：不能重复
+        if(getUserInfo( { username})){
+            // 如果存在
+            ctx.body = {
+                code: 409,// 产生冲突
+                message: '用户名已存在',
+                result: ''
+            }
+            return ;
+        }
+
+
+        // 2、操作数据库：service层
+        const res = await createUser(username, password);
+
+        // 3、返回结果
+        ctx.body = {
+            code: 200,
+            message: '注册成功',
+            data: {
+                username : res.dataValues.username,
+                id: res.dataValues.id,
+            }
+        };
+        return ctx.body;
+    }
+}
+
+// 导出UserController,实例的方式
+module.exports = new UserController();
+
+```
+
+其中判断合法性用户不能重复->需要操作数据库所以要在数据库层写一个获取用户信息的方法
+
+```
+ async getUserInfo({id , username , password , is_admin}) {
+        const whereOpn = {} ; // 根据传入的参数进行查询
+        id && whereOpn.assign({id});
+        username && whereOpn.assign({username});
+        password && whereOpn.assign({password});
+        is_admin && whereOpn.assign({is_admin});
+
+        // 进行查询
+        const res = await User.findOne({
+            attributes: ['id', 'username', 'is_admin'],
+            where: whereOpn
+        });
+
+        return res ? res.dataValues : null;
+
+    }
+```
+
