@@ -276,3 +276,41 @@ class UserService {
 module.exports = new UserService();
 ```
 
+## 9、service端连接数据库
+
+使用sequelize工具
+
+[入门 | Sequelize中文文档 | Sequelize中文网](https://www.sequelize.cn/core-concepts/getting-started)
+
+```
+npm install --save sequelize
+```
+
+```
+npm install --save mysql2
+```
+
+db/seq.js
+
+```
+// 连接数据库
+const Sequelize = require('sequelize');
+
+
+// 分别传递参数 (其它数据库)
+
+const sequelize = new Sequelize('yqgl', 'root', '123456', {
+  host: 'localhost',
+  dialect:'mysql'
+});
+
+// 测试连接
+try {
+  sequelize.authenticate();
+  console.log('Connection has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+
+```
+
