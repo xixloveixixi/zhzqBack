@@ -437,3 +437,117 @@ module.exports = new UserController();
     }
 ```
 
+### 10.2 抽离中间件
+
+把合理性和合法性的中间件抽离出来
+
+middleWare/user.middleware.js
+
+```
+// 我们瑶抽离中间件
+const { getUserInfo } = require('../service/user.service');
+const validateUser =   async(ctx , next) => {
+     // 1、获取数据
+        const { username, password } = ctx.request.body;
+
+        // 进行错误判断
+        // 合理性：是否为空
+        if(!username || !password){
+            ctx.body = {
+                code:400 ,// 错误码
+                message: '用户名或密码不能为空',
+                result: ''
+            }
+            return;
+        }
+        // 放行下一个中间件
+        await next();
+
+}
+const verifyUser = async(ctx , next) => {
+      const { username, password } = ctx.request.body;
+
+        if(getUserInfo( { username})){
+            // 如果存在
+            ctx.body = {
+                code: 409,// 产生冲突
+                message: '用户名已存在',
+                result: ''
+            }
+            return ;
+        }
+
+        await next();
+
+}
+
+// 导出
+module.exports = {
+    validateUser,
+    verifyUser
+};
+```
+
+使用register函数之前使用
+
+```
+// 4、 定义一个简单的路由
+router.post('/register' ,validateUser,verifyUser, register)
+```
+
+### 10.3 拆分中间件--错误处理
+
+我们将错误处理拆解为一个中间件，进行统一错误处理
+
+首先对每一个需要错误处理的地方进行修改：
+
+```
+  ctx.app.emit('error',userFormatError , ctx);
+```
+
+```
+            ctx.app.emit('error', userAlreadyExisted, ctx);
+```
+
+发出错误指令
+
+错误处理：
+
+consitant/err.type.js
+
+```
+module.exports =  {
+   userFormatError: {
+         code: '10001',
+         message: '用户名或密码不能为空',
+         result :''
+   },
+    userAlreadyExisted: {
+            code: '10002',
+            message: '用户名已存在',
+            result: ''
+    },
+}
+```
+
+错误代码：
+
+```
+module.exports = (err , ctx) => {
+    let status = 500; // 默认状态码
+    switch (err.code){
+        case '10001':
+            status = 400; // 错误请求
+            break;
+        case '10002':
+            status = 409; // 冲突
+            break;
+        default:
+            status = 500; // 内部服务器错误
+    }
+    ctx.status = status;
+    ctx.body = err;
+
+}
+```
+
