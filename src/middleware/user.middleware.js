@@ -1,4 +1,5 @@
 // 我们瑶抽离中间件
+const bcrypt = require('bcryptjs')
 const { getUserInfo } = require("../service/user.service");
 const {
   userFormatError,
@@ -37,8 +38,21 @@ const verifyUser = async (ctx, next) => {
   await next();
 };
 
+const cryptPassword =async (ctx , next) => {
+// 导出password
+const {password} = ctx.request.body;
+// 同步生成言
+const salt = bcrypt.genSaltSync(10);
+// hash进行加密
+const hash = bcrypt.hashSync(password , salt);
+// 把密文将明文覆盖掉
+ctx.request.body.password = hash;
+
+await next();
+}
 // 导出
 module.exports = {
   validateUser,
   verifyUser,
+  cryptPassword
 };

@@ -10,8 +10,8 @@ class UserController {
             code: 200,
             message: '注册成功',
             data: {
-                username : res.dataValues.username,
-                id: res.dataValues.id,
+                username : res.username,
+                id: res.id,
             }
         };
     } catch (error) {

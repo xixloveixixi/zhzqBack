@@ -549,5 +549,66 @@ module.exports = (err , ctx) => {
     ctx.body = err;
 
 }
+
+
+```
+
+在使用service层的时候一定要记住try...catch
+
+eg :verifyUser中使用getUserInfo
+
+```
+const verifyUser = async (ctx, next) => {
+  const { username, password } = ctx.request.body;
+  try {
+    const user = await getUserInfo({ username });
+    if (user) {
+      console.error("用户名已存在", ctx.request.body);
+      ctx.app.emit("error", userAlreadyExisted, ctx);
+      return;
+    }
+  } catch (error) {
+    console.error('获取用户信息错误！');
+    ctx.app.emit("error", userRegisterError, ctx);
+    return;//防止向下执行
+  }
+
+  await next();
+};
+```
+
+## 11、密码加密
+
+bcrypt,js
+
+安装
+
+```
+ npm install bcryptjs
+```
+
+加密的代码：
+
+```
+const cryptPassword =async (ctx , next) => {
+// 导出password
+const {password} = ctx.request.body;
+// 同步生成言
+const salt = bcrypt.genSaltSync(10);
+// hash进行加密
+const hash = bcrypt.hashSync(password , salt);
+// 把密文将明文覆盖掉
+ctx.request.body.password = hash;
+
+await next();
+}
+```
+
+记得使用：
+
+```
+// 4、 定义一个简单的路由
+router.post('/register' ,validateUser,verifyUser, cryptPassword , register)
+
 ```
 
