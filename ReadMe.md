@@ -612,3 +612,38 @@ router.post('/register' ,validateUser,verifyUser, cryptPassword , register)
 
 ```
 
+## 12、登录部分的接口
+
+```
+router.post('/login' ,validateUser , verifyLogin ,  login)
+```
+
+verifyLogin：
+
+主要做三部分：
+
+- 根据用户名查询数据库
+
+  ```
+  const res = await getUserInfo({username});
+  ```
+
+- 不存在登录不成功
+
+  ```
+   console.error('用户不存在' , {username});
+      ctx.app.emit('error' , userDoseNotExist , ctx);
+  ```
+
+- 存在比对密码是否匹配
+
+  ```
+   // 3、存在->比对密码是否匹配(不匹配报错)
+    if(!bcrypt.compareSync(password , res.password)){
+      ctx.app.emit('error' ,userInvalidPassword , ctx );
+      return ;
+    }
+  ```
+
+  ​
+

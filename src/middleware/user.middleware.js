@@ -5,6 +5,9 @@ const {
   userFormatError,
   userAlreadyExisted,
   userRegisterError,
+  userDoseNotExist,
+  userLoginError,
+  userInvalidPassword
 } = require("../constant/err.types");
 const validateUser = async (ctx, next) => {
   // 1、获取数据
@@ -50,9 +53,37 @@ ctx.request.body.password = hash;
 
 await next();
 }
+
+const verifyLogin = async(ctx , next) => {
+  // 1、根据用户名查数据库->service层
+  const {username , password} = ctx.request.body;
+ try{
+   const res = await getUserInfo({username});
+  if(!res){
+  // 2、不存在->登录不成功
+    console.error('用户不存在' , {username});
+    ctx.app.emit('error' , userDoseNotExist , ctx);
+    return ;
+  }
+   // 3、存在->比对密码是否匹配(不匹配报错)
+  if(!bcrypt.compareSync(password , res.password)){
+    ctx.app.emit('error' ,userInvalidPassword , ctx );
+    return ;
+  }
+ }catch(error){
+  console.error(error);
+  ctx.app.emit('error' ,userLoginError  , ctx);
+  return ;
+ }
+  await next();
+
+
+
+}
 // 导出
 module.exports = {
   validateUser,
   verifyUser,
-  cryptPassword
+  cryptPassword,
+  verifyLogin
 };

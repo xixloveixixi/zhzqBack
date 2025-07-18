@@ -19,6 +19,11 @@ class UserController {
         ctx.app.emit('error', userRegisterError, ctx);
     }
 }
+     async login(ctx){
+        const {username} = ctx.request.body;
+        ctx.body = '欢迎回来' + `${username}`
+
+     }
 }
 
 // 导出UserController,实例的方式
