@@ -755,3 +755,30 @@ changePassword 控制器（业务逻辑）：
 - 调用 user.service.js 的 updateUserInfoById 方法更新数据库
 - 根据 Sequelize 返回的 [affectedRows] 判断更新结果并返回响应
 
+## 15、添加中间件实现跨域问题
+
+跨域中间件：
+
+```
+const cors = require('@koa/cors');
+```
+
+配置跨域中间件：
+
+```
+app.use(cors({
+//指定允许跨域请求的来源（前端域名/端口）
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  //允许跨域请求携带认证信息（如Cookie、JWT令牌）
+  credentials: true,
+  //声明允许前端发送的请求头类型:
+  //Content-Type ：支持JSON格式请求（ application/json ）
+  //Authorization ：支持Bearer令牌认证（ Authorization: Bearer <token> ）
+  allowHeaders: ['Content-Type', 'Authorization'],
+  //指定允许的HTTP请求方法
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  //设置预检请求（Preflight）的缓存时间（单位：秒）
+  maxAge: 86400
+}));
+```
+

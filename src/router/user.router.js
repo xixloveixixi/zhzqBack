@@ -1,7 +1,7 @@
 // 1、引入router
-const Router = require('koa-router');
 // 2、创建一个router实例
-const router = new Router({prefix : '/users'});
+const Router = require('koa-router');
+const router = new Router({ prefix: '/users' });
 const { validateUser , verifyUser , cryptPassword , verifyLogin } =   require('../middleware/user.middleware');
 // 3、引入用户控制器
 const {register , login , changePassword} = require('../controller/userController');
