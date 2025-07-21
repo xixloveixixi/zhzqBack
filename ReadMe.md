@@ -647,3 +647,111 @@ verifyLogin：
 
   ​
 
+## 13、用户的认证与授权
+
+登录成功颁发token，每一次请求就要携带token
+
+jwt：header+playload+signature
+
+jsonwebtoken工具：生成一个签名
+
+```
+npm i jsonwebtoke
+```
+
+1、获取用户信息
+
+从返回结果对象中剔除password属性，将剩下的属性放到一个新的对象当中。
+
+```
+ const {password , ...res} = getUserInfo({username});
+```
+
+2、生成token
+
+jwt.sign(res , secret , {options })
+
+```
+   ctx.body = {
+            code:0,
+            message:'用户登陆成功',
+            result:{
+                token: jwt.sign(res , JWT_SECRET , {expiresIn : '1d'})
+            }
+```
+
+3、中间件进行token的验证
+
+```
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../config/config.default");
+const { tokenexpirederror, invalidToken } = require("../constant/err.types");
+const auth = async (ctx, next) => {
+  const { authorization } = ctx.request.header;
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return ctx.app.emit("error", invalidToken, ctx);
+  }
+  const token = authorization.split(" ")[1];
+  console.log(token);
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    ctx.state.user = user;
+  } catch (error) {
+    // 失败的情况
+    // token过期
+    // token错误：invalid......
+    switch (error.name) {
+      case "TokenExpiredError":
+        console.error("token已过期", error);
+        return ctx.app.emit("error", tokenexpirederror, ctx);
+      case "JsonwebTokenError":
+        console.error("无效的token", error);
+        return ctx.app.emit("error", invalidToken, ctx);
+    }
+  }
+  await next();
+};
+
+module.exports = {
+  auth,
+};
+
+```
+
+## 14、userInfo修改
+
+请求 → auth → cryptPassword → changePassword → 响应
+
+auth：
+
+核心职责：验证用户身份令牌
+
+实现逻辑：
+
+- 从请求头 Authorization: Bearer <token> 提取令牌
+- 使用 jsonwebtoken.verify() 验证签名与有效期
+- 验证通过后将用户信息挂载到 ctx.state.user = { id, username }
+- 验证失败则抛出 invalidToken 或 tokenExpiredError 错误
+
+cryptPassword 中间件（密码加密）:
+
+核心职责 ：对请求体中的明文密码进行 bcrypt 加密
+
+实现逻辑 ：
+
+- 从 ctx.request.body 获取 password 字段
+- 使用 bcrypt.genSaltSync(10) 生成盐值
+- 执行 bcrypt.hashSync(password, salt) 生成加密密码
+- 将加密后的密码覆盖回 ctx.request.body.password
+
+changePassword 控制器（业务逻辑）：
+
+核心职责 ：完成密码更新的数据库操作
+
+实现逻辑 ：
+
+- 从 ctx.state.user.id 获取当前用户 ID
+- 从 ctx.request.body 获取加密后的密码
+- 调用 user.service.js 的 updateUserInfoById 方法更新数据库
+- 根据 Sequelize 返回的 [affectedRows] 判断更新结果并返回响应
+

@@ -56,7 +56,7 @@ await next();
 
 const verifyLogin = async(ctx , next) => {
   // 1、根据用户名查数据库->service层
-  const {username , password} = ctx.request.body;
+  const {username , password } = ctx.request.body;
  try{
    const res = await getUserInfo({username});
   if(!res){
@@ -65,6 +65,7 @@ const verifyLogin = async(ctx , next) => {
     ctx.app.emit('error' , userDoseNotExist , ctx);
     return ;
   }
+  console.log(res);
    // 3、存在->比对密码是否匹配(不匹配报错)
   if(!bcrypt.compareSync(password , res.password)){
     ctx.app.emit('error' ,userInvalidPassword , ctx );
