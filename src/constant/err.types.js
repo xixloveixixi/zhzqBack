@@ -38,5 +38,10 @@ module.exports = {
      code: "10102",
     message: "无效的token",
     result: "",
+  },
+  userNoPermission : {
+    code: "10103",
+    message: "您没有权限访问",
+    result: "",
   }
 };

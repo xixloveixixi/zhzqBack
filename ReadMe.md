@@ -782,3 +782,35 @@ app.use(cors({
 }));
 ```
 
+## 16、动态路由
+
+现在后端要实现一个接口：根据用户的身份传递对应的权限路由
+
+步骤：
+
+- 新建menu.config配置项，里面配置的是角色对应的用户权限路由
+
+- 添加权限守卫：获取对应的路由必须需要有toke
+
+- ```
+    if(!token){
+      return ctx.app.emit("error", userNoPermission, ctx);
+    }
+  ```
+
+- getMenu：
+
+  首先我根据的是username分配的角色名称
+
+  获取角色，然后根据角色名匹配对应的权限路由就可以了
+
+- ```
+   const { role } = ctx.state.user;
+      const menuList = menuConfig[role];
+  ```
+
+前端部分：
+
+前端是react:
+
+前端根据后端返回的角色权限路由进行渲染对应的组件。

@@ -1,12 +1,15 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/config.default");
-const { tokenexpirederror, invalidToken } = require("../constant/err.types");
+const { tokenexpirederror, invalidToken , userNoPermission } = require("../constant/err.types");
 const auth = async (ctx, next) => {
   const { authorization } = ctx.request.header;
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return ctx.app.emit("error", invalidToken, ctx);
   }
   const token = authorization.split(" ")[1];
+  if(!token){
+    return ctx.app.emit("error", userNoPermission, ctx);
+  }
   // console.log(token);
   try {
     const user = jwt.verify(token, JWT_SECRET);

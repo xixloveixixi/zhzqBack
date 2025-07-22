@@ -14,16 +14,16 @@ const User = sequelize.define('User', {
         allowNull: false,
         comment: '密码'
     },
-    is_admin: {
-        type: DataTypes.BOOLEAN,
+    role: {
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: false,
-        comment: '是否为管理员'
+        defaultValue: 'user',
+        comment: '用户角色'
     }
 });
 
 // 强制同步数据库
-// sequelize.sync({ force: true });
+sequelize.sync({ force: true });
 
 // 导出User模型
 module.exports = User;

@@ -6,11 +6,19 @@ const {
 } = require("../service/user.service");
 const { JWT_SECRET } = require("../config/config.default");
 const jwt = require("jsonwebtoken");
+const menuConfig = require("../config/menu.config");
 
 class UserController {
   async register(ctx) {
     try {
       const { username, password } = ctx.request.body;
+      console.log(username , password);
+      let role = 'user';
+      if (username === 'admin') {
+        role = 'admin';
+      } else if (username === 'manage') {
+        role = 'manage';
+      }
       const res = await createUser(username, password);
       ctx.body = {
         code: 200,
@@ -18,6 +26,7 @@ class UserController {
         data: {
           username: res.username,
           id: res.id,
+          role: res.role,
         },
       };
     } catch (error) {
@@ -28,18 +37,20 @@ class UserController {
   async login(ctx) {
     const { username } = ctx.request.body;
     try {
-      //  username : "admin",
-      //             token :"mocktoken123456admin",
-      //             // 添加按钮的权限信息
-      //             authBtn : ['add' , 'edit' , 'delete']
       const { password, ...res } = await getUserInfo({ username });
       let authBtn = [];
+      let isAdmin = false;
+      let isManager = false;
+      let isUser = false;
       if (res.username === "admin") {
         authBtn = ["add", "edit", "delete"];
+        isAdmin = true;
       } else if (res.username === "manage") {
         authBtn = ["add", "edit"];
-      } else if (res.username === "user") {
+        isManager = true;
+      } else {
         authBtn = ["view"];
+        isUser = true;
       }
       ctx.body = {
         code: 200,
@@ -48,6 +59,9 @@ class UserController {
           token: jwt.sign(res, JWT_SECRET, { expiresIn: "1d" }),
           username: res.username,
           authBtn: authBtn,
+          isAdmin,
+          isManager,
+          isUser,
         },
       };
     } catch (error) {
@@ -74,6 +88,25 @@ class UserController {
       };
     }
     // 返回结果
+  }
+  // 获取角色对应的菜单实例
+  async getMenu(ctx) {
+    const { role } = ctx.state.user;
+    const menuList = menuConfig[role];
+    // console.log(ctx.state.user);
+    try {
+      ctx.body = {
+        code: 200,
+        message: "获取菜单成功",
+        result: menuList,
+      };
+    } catch (error) {
+      ctx.body = {
+        code: 10008,
+        message: "获取菜单失败",
+        result: "",
+      };
+    }
   }
 }
 
