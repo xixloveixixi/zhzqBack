@@ -172,7 +172,7 @@ module.exports = {
         "key": "/personal",
     }
 ]   ,
-    manager : [
+    manage : [
     {
         "icon": "DashboardOutlined",
         "label": "工作台",

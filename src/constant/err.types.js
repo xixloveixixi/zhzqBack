@@ -43,5 +43,55 @@ module.exports = {
     code: "10103",
     message: "您没有权限访问",
     result: "",
-  }
+  },
+  billFormatError : {
+    code: "10201",
+    message: "账单参数错误",
+    result: "",
+  },
+  billGetError : {
+    code: "10202",
+    message: "账单查询失败",
+    result: "",
+  },
+  billDeleteError : {
+    code: "10203",
+    message: "账单删除失败",
+    result: "",
+  },
+  tenantFormatError : {
+    code: "10301",
+    message: "租户参数错误",
+    result: "",
+  },
+    tenantGetError : {
+    code: "10302",
+    message: "账单获取失败",
+    result: "",
+  },
+  tenantDeleteError : {
+    code: "10303",
+    message: "租户删除失败",
+    result: "",
+  },
+  tenantAddError : {
+    code: "10304",
+    message: "租户添加失败",
+    result: "",
+  },
+  buildingFormatError : {
+    code: "10401",
+    message: "楼宇参数错误",
+    result: "",
+  },
+  buildingGetError : {
+    code: "10402",
+    message: "楼宇获取失败",
+    result: "",
+  },
+  buildingDeleteError : {
+    code: "10403",
+    message: "楼宇删除失败",
+    result: "",
+  },
 };

@@ -39,18 +39,12 @@ class UserController {
     try {
       const { password, ...res } = await getUserInfo({ username });
       let authBtn = [];
-      let isAdmin = false;
-      let isManager = false;
-      let isUser = false;
       if (res.username === "admin") {
         authBtn = ["add", "edit", "delete"];
-        isAdmin = true;
       } else if (res.username === "manage") {
         authBtn = ["add", "edit"];
-        isManager = true;
       } else {
         authBtn = ["view"];
-        isUser = true;
       }
       ctx.body = {
         code: 200,
@@ -58,10 +52,7 @@ class UserController {
         result: {
           token: jwt.sign(res, JWT_SECRET, { expiresIn: "1d" }),
           username: res.username,
-          authBtn: authBtn,
-          isAdmin,
-          isManager,
-          isUser,
+          authBtn: authBtn
         },
       };
     } catch (error) {

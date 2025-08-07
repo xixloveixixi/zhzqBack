@@ -1,6 +1,10 @@
 const Koa = require('koa');
 const KoaBody = require('koa-body'); 
 const userRouter = require('../router/user.router');
+const billRouter = require('../router/bill.router');
+const tenantRouter = require('../router/tenant.router');
+const buildingRouter = require('../router/building.router');
+
 const errStatus = require('../app/errStatus'); // 确保路径正确
 const app = new Koa();
 const cors = require('@koa/cors');
@@ -20,6 +24,9 @@ app.use(KoaBody({
 
 // 再注册路由中间件
 app.use(userRouter.routes());
+app.use(billRouter.routes());
+app.use(tenantRouter.routes());
+app.use(buildingRouter.routes());
 
 // 最后定义全局中间件（404 处理）
 app.use(async (ctx) => {
