@@ -796,6 +796,7 @@ app.use(cors({
     if(!token){
       return ctx.app.emit("error", userNoPermission, ctx);
     }
+    ```
   ```
 
 - getMenu：

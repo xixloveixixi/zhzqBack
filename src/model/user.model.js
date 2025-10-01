@@ -23,7 +23,7 @@ const User = sequelize.define('User', {
 });
 
 // // 强制同步数据库
-// sequelize.sync({ force: true });
+sequelize.sync();
 
 // 导出User模型
 module.exports = User;

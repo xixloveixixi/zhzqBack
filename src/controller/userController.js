@@ -39,6 +39,7 @@ class UserController {
     try {
       const { password, ...res } = await getUserInfo({ username });
       let authBtn = [];
+      let createdAt = res.createdAt;
       if (res.username === "admin") {
         authBtn = ["add", "edit", "delete"];
       } else if (res.username === "manage") {
@@ -46,13 +47,24 @@ class UserController {
       } else {
         authBtn = ["view"];
       }
+      // 生成token
+      const token = jwt.sign(res, JWT_SECRET, { expiresIn: "1d" });
+      // 设置cookie
+      ctx.cookies.set('token', token, {
+         httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+      secure: false,
+      sameSite: 'none'
+      });
       ctx.body = {
         code: 200,
         message: "用户登陆成功",
         result: {
-          token: jwt.sign(res, JWT_SECRET, { expiresIn: "1d" }),
+          token: token,
           username: res.username,
-          authBtn: authBtn
+          authBtn: authBtn,
+          createdAt : createdAt
         },
       };
     } catch (error) {

@@ -17,16 +17,17 @@ class UserService {
   }
 
   //   获取用户信息
-  async getUserInfo({ id, username, password, role }) {
+  async getUserInfo({ id, username, password, role  , createdTime }) {
     const whereOpn = {}; // 根据传入的参数进行查询
     if (id) whereOpn.id = id;
     if (username) whereOpn.username = username;
     if (password) whereOpn.password = password;
     if (role) whereOpn.role = role;
+    if (createdTime) whereOpn.createdTime = createdTime;
 
     // 进行查询
     const res = await User.findOne({
-      attributes: ["id", "username", "role", "password"],
+      attributes: ["id", "username", "role", "password" , "createdAt"],
       where: whereOpn,
     });
 

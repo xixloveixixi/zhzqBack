@@ -66,45 +66,6 @@ module.exports = {
         ]
     },
     {
-        "icon": "TransactionOutlined",
-        "label": "招商管理",
-        "key": "/merchants",
-    },
-    {
-        "icon": "FundProjectionScreenOutlined",
-        "label": "运营管理",
-        "key": "/operation",
-        "children": [
-            {
-
-                "icon": "FundViewOutlined",
-                "label": "运营总览",
-                "key": "/operation/all",
-
-            },
-            {
-                "icon": "ReadOutlined",
-                "label": "文章发布",
-                "key": "/operation/article",
-            },
-            {
-                "icon": "CommentOutlined",
-                "label": "内容评论",
-                "key": "/operation/comments",
-            }
-        ]
-    },
-    {
-        "icon": "ToolOutlined",
-        "label": "设备管理",
-        "key": "/equipment",
-    },
-    {
-        "icon": "ThunderboltOutlined",
-        "label": "能源消耗",
-        "key": "/energy",
-    },
-    {
         "icon": "SettingOutlined",
         "label": "系统设置",
         "key": "/settings",
@@ -113,6 +74,12 @@ module.exports = {
         "icon": "UserOutlined",
         "label": "个人中心",
         "key": "/personal",
+    },
+    {
+        "icon": "WechatWorkOutlined",
+        "label": "聊天室",
+        "key": "/wechatWork"
+
     }
 ]   ,
     user : [
@@ -122,54 +89,20 @@ module.exports = {
         "key": "/dashboard",
     },
     {
-
-        "icon": "TeamOutlined",
-        "label": "租户管理",
-        "key": "/users",
-    },
-    {
-        "icon": "LaptopOutlined",
-        "label": "物业管理",
-        "key": "/estate",
-        "children": [
-            {
-
-                "icon": "InsertRowLeftOutlined",
-                "label": "楼宇管理",
-                "key": "/estate/tenement",
-
-            },
-            {
-                "icon": "BankOutlined",
-                "label": "房间管理",
-                "key": "/estate/room",
-            },
-            {
-                "icon": "TruckOutlined",
-                "label": "车辆信息",
-                "key": "/estate/car",
-            }
-        ]
-    },
-    {
         "icon": "ToolOutlined",
-        "label": "报修管理",
-        "key": "/repair"
-    },
-    {
-        "icon": "ToolOutlined",
-        "label": "设备管理",
-        "key": "/equipment",
-    },
-    {
-        "icon": "ThunderboltOutlined",
-        "label": "能源消耗",
-        "key": "/energy",
+        "label": "报修申请",
+        "key": "/requestrepair"
     },
     {
         "icon": "UserOutlined",
         "label": "个人中心",
         "key": "/personal",
+    },
+    {
+        "icon": "WechatWorkOutlined",
+        "label": "聊天室",
+        "key": "/wechatWork"
+
     }
 ]   ,
     manage : [
@@ -214,45 +147,6 @@ module.exports = {
         "key": "/repair"
     },
     {
-        "icon": "TransactionOutlined",
-        "label": "招商管理",
-        "key": "/merchants",
-    },
-    {
-        "icon": "FundProjectionScreenOutlined",
-        "label": "运营管理",
-        "key": "/operation",
-        "children": [
-            {
-
-                "icon": "FundViewOutlined",
-                "label": "运营总览",
-                "key": "/operation/all",
-
-            },
-            {
-                "icon": "ReadOutlined",
-                "label": "文章发布",
-                "key": "/operation/article",
-            },
-            {
-                "icon": "CommentOutlined",
-                "label": "内容评论",
-                "key": "/operation/comments",
-            }
-        ]
-    },
-    {
-        "icon": "ToolOutlined",
-        "label": "设备管理",
-        "key": "/equipment",
-    },
-    {
-        "icon": "ThunderboltOutlined",
-        "label": "能源消耗",
-        "key": "/energy",
-    },
-    {
         "icon": "SettingOutlined",
         "label": "系统设置",
         "key": "/settings",
@@ -261,6 +155,12 @@ module.exports = {
         "icon": "UserOutlined",
         "label": "个人中心",
         "key": "/personal",
+    },
+    {
+        "icon": "WechatWorkOutlined",
+        "label": "聊天室",
+        "key": "/wechatWork"
+
     }
 ]
 }

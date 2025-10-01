@@ -6,7 +6,6 @@ const {getTenant , editTenant ,deleteTenant , deleteTenants , addTenant} = requi
 
 // 确保导入路径和文件名完全正确
 // const { bill } = require('../middleware/bill.middleware');
-const BillController = require('../controller/billController');
 
 router.post('/tenantList', getTenant);
 router.post('/deleteTenant', deleteTenant);
